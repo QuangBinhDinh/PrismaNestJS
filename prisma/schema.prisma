@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Employee {
+  id        Int      @id @default(autoincrement())
+  empNo     Int      @map("emp_no")
+  birthDate DateTime @map("birth_date") @db.Date
+  firstName String   @map("first_name") @db.VarChar(14)
+  lastName  String   @map("last_name") @db.VarChar(16)
+  gender    Gender
+  hireDate  DateTime @map("hire_date") @db.Date
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("employees")
+}
+
+model Department {
+  id        Int      @id @default(autoincrement())
+  deptNo    String   @unique @map("dept_no") @db.Char(4)
+  deptName  String   @map("dept_name") @db.VarChar(40)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("departments")
+}
+
+model User {
+  id           BigInt   @id @default(autoincrement())
+  username     String   @unique @db.VarChar(50)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  email        String   @unique @db.VarChar(255)
+  phone        String?  @db.VarChar(20)
+  fullName     String?  @map("full_name") @db.VarChar(100)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+enum Gender {
+  M
+  F
+}

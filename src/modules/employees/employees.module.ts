@@ -1,0 +1,18 @@
+import { Module } from "@nestjs/common";
+import { EmployeesController } from "@modules/employees/employees.controller";
+import { EmployeesService } from "@modules/employees/employees.service";
+import { EmployeesRepository } from "@modules/employees/employees.repository";
+import { PaginationMetadata } from "@common/services/pagination-metadata.service";
+import { DepartmentsRepository } from "../departments/departments.repository";
+
+@Module({
+  controllers: [EmployeesController],
+  providers: [
+    EmployeesService,
+    EmployeesRepository,
+    PaginationMetadata,
+    DepartmentsRepository,
+  ],
+  exports: [EmployeesRepository],
+})
+export class EmployeesModule {}
