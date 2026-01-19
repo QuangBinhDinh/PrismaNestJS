@@ -48,6 +48,28 @@ export class EmployeesService {
     return employee;
   }
 
+  public async findWithEmpNo(empNo: number): Promise<Employee> {
+    const employee = await this.employeesRepository.findWithEmpNo(empNo);
+
+    if (!employee) {
+      throw new NotFoundError(`Employee with ID ${empNo}`);
+    }
+    // Cast gender from string to Gender enum (TypedSQL returns string for enums)
+    return {
+      ...employee,
+      gender: employee.gender as Gender,
+    };
+  }
+
+  public async searchByName(searchTerm: string): Promise<Employee[]> {
+    const employees = await this.employeesRepository.searchByName(searchTerm);
+    // Cast gender from string to Gender enum (TypedSQL returns string for enums)
+    return employees.map((emp) => ({
+      ...emp,
+      gender: emp.gender as Gender,
+    }));
+  }
+
   public async create(request: CreateEmployeeRequest): Promise<Employee> {
     try {
       const empNo = await this.generateEmpNo();

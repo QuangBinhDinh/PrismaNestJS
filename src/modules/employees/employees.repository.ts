@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@/database/prisma.service";
 import { Employee, Prisma } from "@prisma/client";
+import { getEmployeeByEmpNo, searchEmployeesByName } from "@prisma/client/sql";
 import { DEFAULT_QUERY_LIMIT } from "@common/constants/pagination.constants";
 
 @Injectable()
@@ -109,5 +110,18 @@ export class EmployeesRepository {
       }
       throw error;
     }
+  }
+
+  // TypedSQL method - uses raw SQL with full type safety
+  async findWithEmpNo(empNo: number) {
+    const result = await this.prisma.$queryRawTyped(getEmployeeByEmpNo(empNo));
+    return result[0] ?? null;
+  }
+
+  // TypedSQL method - search employees by first name or last name using LIKE
+  async searchByName(searchTerm: string) {
+    return this.prisma.$queryRawTyped(
+      searchEmployeesByName(searchTerm, searchTerm),
+    );
   }
 }

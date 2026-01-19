@@ -63,6 +63,28 @@ export class EmployeesController {
     return employee.map(EntityMapper.toEmployeeResponse);
   }
 
+  @Get("typed-sql/:empNo")
+  @ApiOperation({ summary: "Get employee by empNo using TypedSQL" })
+  @ApiResponse({ status: 200, description: "Employee details" })
+  public async findByEmpNoTypedSql(
+    @Param("empNo", ParseIntPipe) empNo: number,
+  ): Promise<GetEmployeeResponse> {
+    const employee = await this.employeesService.findWithEmpNo(empNo);
+    return EntityMapper.toEmployeeResponse(employee);
+  }
+
+  @Get("search/:name")
+  @ApiOperation({
+    summary: "Search employees by first name or last name using TypedSQL",
+  })
+  @ApiResponse({ status: 200, description: "List of matching employees" })
+  public async searchByName(
+    @Param("name") name: string,
+  ): Promise<GetEmployeeResponse[]> {
+    const employees = await this.employeesService.searchByName(name);
+    return employees.map(EntityMapper.toEmployeeResponse);
+  }
+
   @Get(":id")
   @ApiOperation({ summary: "Get employee by ID" })
   @ApiResponse({ status: 200, description: "Employee details" })
